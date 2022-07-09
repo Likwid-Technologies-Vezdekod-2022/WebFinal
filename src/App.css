@@ -36,3 +36,35 @@
     transform: rotate(360deg);
   }
 }
+
+.main-panel__controls {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.main-panel__btn {
+  width: 15%;
+  margin-left: 30px;
+}
+
+.mail-item {
+  width: 30%;
+}
+
+.mail-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mail-item__title, .mail-item__name {
+  font-weight: bold;
+  margin: 0;
+}
+
+.mail-item__title, .mail-item__text {
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
