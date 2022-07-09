@@ -12,7 +12,8 @@ import {
   Panel,
   PanelHeader,
   Button,
-  Checkbox
+  Checkbox,
+  NativeSelect
 } from "@vkontakte/vkui";
 import "@vkontakte/vkui/dist/vkui.css";
 
@@ -27,13 +28,15 @@ const App = () => {
     
   const [selectedMails, setSelectedMails] = useState([]);
 
+  const [appearance, setAppearance] = useState('light');
+
   useEffect(async () => {
     const res = await fetch('http://localhost:3030/api/mails/', {
       method: 'GET'
     })
     const data = await res.json();
     setMails([...data]);
-  })
+  }, [])
 
   const updateSelectedMails = (isChecked, idx) => {
     let array = mails;
@@ -42,10 +45,10 @@ const App = () => {
       array[idx].checked = true;
     }
 
-    setSelectedMails(array);
+    setSelectedMails([...array]);
   }
 
-  const setReadMails = () => {
+  const setReadMails = async () => {
     let array = selectedMails;
 
     array.map(item => {
@@ -55,12 +58,19 @@ const App = () => {
       }
     })
 
-    setMails([...array]);
+    const res = await fetch('http://localhost:3030/api/mails/', {
+      method: 'POST',
+      body: JSON.stringify(array),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    const data = await res.json();
 
-    console.log(mails)
+    setMails([...array]);
   }
 
-  const setUnreadMails = () => {
+  const setUnreadMails = async () => {
     let array = selectedMails;
 
     array.map(item => {
@@ -70,8 +80,16 @@ const App = () => {
       }
     })
 
+    const res = await fetch('http://localhost:3030/api/mails/', {
+      method: 'POST',
+      body: JSON.stringify(array),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    const data = await res.json();
+
     setMails([...array]);
-    console.log(mails)
   }
 
   const changeCheckedAllMails = (isChecked) => {
@@ -103,53 +121,58 @@ const App = () => {
   }
 
   return (
-    <AppRoot>
-      <SplitLayout header={<PanelHeader separator={false} />}>
-        <SplitCol spaced={viewWidth && viewWidth > ViewWidth.MOBILE}>
-          <View activePanel="main">
-            <Panel id="main">
-              <PanelHeader>
-                Mails
-              </PanelHeader>
+    <ConfigProvider appearance={appearance}>
+      <AdaptivityProvider>
+        <AppRoot>
+          <SplitLayout header={<PanelHeader separator={false} />}>
+            <SplitCol spaced={viewWidth && viewWidth > ViewWidth.MOBILE}>
+              <View activePanel="main">
+                <Panel id="main">
+                  <PanelHeader>
+                    Mails
+                  </PanelHeader>
 
-              <div className="main-panel__controls">
-                <Checkbox
-                  className="main-panel__checkbox"
-                  onChange={e => changeCheckedAllMails(e.target.checked)}>
-                  Выделить все письма
-                </Checkbox>
+                  <div className="main-panel__controls">
+                    <Checkbox
+                      className="main-panel__checkbox"
+                      onChange={e => changeCheckedAllMails(e.target.checked)}>
+                      Выделить все письма
+                    </Checkbox>
 
-                <Button
-                  className="main-panel__btn"
-                  onClick={setReadMails}>
-                  Отметить прочитанным
-                </Button>
+                    <Button
+                      className="main-panel__btn"
+                      onClick={setReadMails}>
+                      Отметить прочитанным
+                    </Button>
 
-                <Button
-                  className="main-panel__btn"
-                  onClick={setUnreadMails}>
-                  Отметить непрочитанным
-                </Button>
-              </div>
+                    <Button
+                      className="main-panel__btn"
+                      onClick={setUnreadMails}>
+                      Отметить непрочитанным
+                    </Button>
 
-              <MailList 
-                mails={mails}
-                updateSelectedMails={updateSelectedMails}
-              />
-            </Panel>
-          </View>
-        </SplitCol>
-      </SplitLayout>
-    </AppRoot>
+                    <NativeSelect onChange={e => setAppearance(e.target.value)}>
+                      <option value="light">Светлая тема</option>
+                      <option value="dark">Темная тема</option>
+                    </NativeSelect>
+                  </div>
+
+                  <MailList 
+                    mails={mails}
+                    updateSelectedMails={updateSelectedMails}
+                  />
+                </Panel>
+              </View>
+            </SplitCol>
+          </SplitLayout>
+        </AppRoot>
+      </AdaptivityProvider>
+    </ConfigProvider>
   );
 };
 
 ReactDOM.render(
-  <ConfigProvider>
-    <AdaptivityProvider>
-      <App />
-    </AdaptivityProvider>
-  </ConfigProvider>,
+  <App />,
   document.getElementById("root")
 );
 
