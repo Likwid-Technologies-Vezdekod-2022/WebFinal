@@ -10,7 +10,7 @@ class mailsContoller {
             let offset = page * limit - limit;
 
 
-            let filePath = path.join(__dirname, 'small.json');
+            let filePath = path.join(__dirname, 'medium.json');
             let rawData = fs.readFileSync(filePath);
             
             let data = JSON.parse(rawData);
@@ -27,7 +27,7 @@ class mailsContoller {
         try {
             if(!req.body) return res.sendStatus(400);
             
-            let filePath = path.join(__dirname, 'small.json');
+            let filePath = path.join(__dirname, 'medium.json');
             fs.writeFileSync(filePath, JSON.stringify(req.body));
             
             res.json(req.body);

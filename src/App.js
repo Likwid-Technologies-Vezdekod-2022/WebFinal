@@ -37,9 +37,7 @@ const App = () => {
   const [lastPage, setLastPage] = useState(1);
 
   const [fetching, setFetching] = useState(true);
-
-  const [totalCount, setTotalCount] = useState(0);
-
+  
   useEffect(async () => {
     if (fetching) {
       const res = await fetch(`http://localhost:3030/api/mails/?limit=20&page=${currentPage}`, {
