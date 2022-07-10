@@ -4,11 +4,20 @@ const path = require('path');
 class mailsContoller {
     async getMails(req, res) {
         try {
+            let { limit, page } = req.query;
+            page = page || 1;
+            limit = limit || 20;
+            let offset = page * limit - limit;
+
+
             let filePath = path.join(__dirname, 'small.json');
             let rawData = fs.readFileSync(filePath);
-
+            
             let data = JSON.parse(rawData);
-            res.json(data);
+
+            data = [...data].splice(offset, limit);
+
+            res.json([...data]);
         } catch (err) {
             console.log(err);
         }

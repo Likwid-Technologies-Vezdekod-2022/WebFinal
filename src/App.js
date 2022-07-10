@@ -19,6 +19,9 @@ import "@vkontakte/vkui/dist/vkui.css";
 
 import MailList from "./components/MailList";
 
+import available from './components/AvailableTheme.module.css';
+import pets from './components/PetsTheme.module.css';
+
 import './App.css';
 
 const App = () => {
@@ -30,13 +33,54 @@ const App = () => {
 
   const [appearance, setAppearance] = useState('light');
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+
+  const [fetching, setFetching] = useState(true);
+
+  const [totalCount, setTotalCount] = useState(0);
+
   useEffect(async () => {
-    const res = await fetch('http://localhost:3030/api/mails/', {
-      method: 'GET'
-    })
-    const data = await res.json();
-    setMails([...data]);
+    if (fetching) {
+      const res = await fetch(`http://localhost:3030/api/mails/?limit=20&page=${currentPage}`, {
+        method: 'GET'
+      })
+      const data = await res.json();
+
+      setCurrentPage(prevState => prevState + 1);
+
+      if (data.length) {
+        setMails([...data]);
+
+        setLastPage(currentPage);
+
+        window.scrollTo(0, 50);
+      }
+    }
+
+    setFetching(false);
+  }, [fetching])
+
+  useEffect(() => {
+    document.addEventListener('scroll', scrollHandler);
+
+    return function() {
+      document.removeEventListener('scroll', scrollHandler);
+    }
   }, [])
+
+  const scrollHandler = (e) => {
+    if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight ) < 30) {
+      setFetching(true);
+    }
+  }
+
+  const setFirstPage = () => {
+    if (lastPage > 1) {
+      setCurrentPage(lastPage - 1);
+      setFetching(true);
+    }
+  }
 
   const updateSelectedMails = (isChecked, idx) => {
     let array = mails;
@@ -120,6 +164,16 @@ const App = () => {
 
   }
 
+  let [classes, setClasses] = useState('');
+
+  useEffect(() => {
+    if (appearance === 'pets') {
+      setClasses(pets);
+    } else {
+      setClasses(available);
+    }
+  }, [appearance])
+
   return (
     <ConfigProvider appearance={appearance}>
       <AdaptivityProvider>
@@ -127,8 +181,8 @@ const App = () => {
           <SplitLayout header={<PanelHeader separator={false} />}>
             <SplitCol spaced={viewWidth && viewWidth > ViewWidth.MOBILE}>
               <View activePanel="main">
-                <Panel id="main">
-                  <PanelHeader>
+                <Panel className={classes.mainPanel} id="main">
+                  <PanelHeader className={appearance === 'available' ? classes.mainPanelHeader : ''}>
                     Mails
                   </PanelHeader>
 
@@ -141,12 +195,14 @@ const App = () => {
 
                     <Button
                       className="main-panel__btn"
+                      appearance={appearance === 'available' ? 'neutral' : 'accent'}
                       onClick={setReadMails}>
                       Отметить прочитанным
                     </Button>
 
                     <Button
                       className="main-panel__btn"
+                      appearance={appearance === 'available' ? 'neutral' : 'accent'}
                       onClick={setUnreadMails}>
                       Отметить непрочитанным
                     </Button>
@@ -154,8 +210,17 @@ const App = () => {
                     <NativeSelect onChange={e => setAppearance(e.target.value)}>
                       <option value="light">Светлая тема</option>
                       <option value="dark">Темная тема</option>
+                      <option value="available">Доступная тема</option>
+                      <option value="pets">Котики и собачки</option>
                     </NativeSelect>
                   </div>
+
+                  <Button
+                    className="main-panel__btn"
+                    appearance={appearance === 'available' ? 'neutral' : 'accent'}
+                    onClick={setFirstPage}>
+                    Назад
+                  </Button>
 
                   <MailList 
                     mails={mails}

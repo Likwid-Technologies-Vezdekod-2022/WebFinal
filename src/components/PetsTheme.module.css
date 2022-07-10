@@ -1,0 +1,8 @@
+.mainPanel {
+    background-image: url('../assets/background.png');
+    background-attachment: local;
+}
+
+.mainPanelHeader {
+    background-color: white;
+}

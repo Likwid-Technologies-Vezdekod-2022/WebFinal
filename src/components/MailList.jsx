@@ -8,7 +8,8 @@ import MailItem from './MailItem';
 
 function MailList({ mails, updateSelectedMails }) {
     return (
-        <List header={<Header mode="secondary">Items</Header>}>
+        <List
+        header={<Header mode="secondary">Items</Header>}>
             {mails.map((mail, idx) =>
                 <MailItem 
                     mail={mail}
