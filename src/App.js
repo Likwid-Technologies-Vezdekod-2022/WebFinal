@@ -52,7 +52,7 @@ const App = () => {
 
         setLastPage(currentPage);
 
-        window.scrollTo(0, 50);
+        if (currentPage !== 1) window.scrollTo(0, 50);
       }
     }
 
@@ -223,6 +223,7 @@ const App = () => {
                   <MailList 
                     mails={mails}
                     updateSelectedMails={updateSelectedMails}
+                    appearance={appearance}
                   />
                 </Panel>
               </View>

@@ -6,7 +6,7 @@ import {
 
 import MailItem from './MailItem';
 
-function MailList({ mails, updateSelectedMails }) {
+function MailList({ mails, updateSelectedMails, appearance }) {
     return (
         <List
         header={<Header mode="secondary">Items</Header>}>
@@ -16,6 +16,7 @@ function MailList({ mails, updateSelectedMails }) {
                     key={idx}
                     updateSelectedMails={updateSelectedMails}
                     idx={idx}
+                    appearance={appearance}
                 />
             )}
         </List>

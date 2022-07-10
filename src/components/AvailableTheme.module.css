@@ -2,6 +2,22 @@
     background-color: black;
 }
 
+.mailItemCategory, .mailItemNew {
+    font-weight: 500;
+    margin-left: 15px;
+    background-color: black;
+    border-radius: 5px;
+    padding: 3px;
+    color: white;
+}
+
+.mailItemNew {
+    margin-left: 0;
+    margin-right: 5px;
+    color: black;
+    background-color: white;
+}
+
 .mainPanelBtn {
     color: black !important;
 }

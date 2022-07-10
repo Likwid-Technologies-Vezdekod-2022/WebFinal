@@ -74,6 +74,23 @@
   text-overflow: ellipsis;
 }
 
+.mail-item__category {
+  font-weight: 500;
+  margin-left: 15px;
+  background-color: rgb(168, 168, 168);
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.mail-item__new {
+  font-weight: 500;
+  margin-right: 5px;
+  background-color: rgb(233, 71, 71);
+  border-radius: 5px;
+  padding: 3px;
+  color: whitesmoke;
+}
+
 .mail-list {
   max-height: 800px;
   overflow: auto;
